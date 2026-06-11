@@ -34,6 +34,7 @@ import com.fixakathefix.towerpixeldungeon.scenes.HeroSelectScene;
 import com.fixakathefix.towerpixeldungeon.scenes.InterlevelScene;
 import com.fixakathefix.towerpixeldungeon.scenes.RankingsScene;
 import com.fixakathefix.towerpixeldungeon.scenes.TitleScene;
+import com.fixakathefix.towerpixeldungeon.ui.ActionIndicator;
 import com.fixakathefix.towerpixeldungeon.ui.Icons;
 import com.fixakathefix.towerpixeldungeon.ui.RedButton;
 import com.fixakathefix.towerpixeldungeon.ui.Window;
@@ -100,6 +101,31 @@ public class WndGame extends Window {
 			} );
 			curBtn.icon(Icons.get(Icons.RANKINGS));
 		}
+
+		// New game
+		addButton(curBtn = new RedButton(Messages.get(this, "new_game")) {
+			@Override
+			protected void onClick() {
+				try {
+					Dungeon.saveAll();
+					int newSlot = Dungeon.cloneCurrentGame();
+					if (newSlot == -1) {
+						return;
+					}
+
+					GamesInProgress.curSlot = newSlot;
+					Dungeon.hero = null;
+					Dungeon.daily = Dungeon.dailyReplay = false;
+					ActionIndicator.action = null;
+					InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+					ShatteredPixelDungeon.switchScene(InterlevelScene.class);
+				} catch (IOException e) {
+					ShatteredPixelDungeon.reportException(e);
+				}
+			}
+		});
+		curBtn.icon(Icons.get(Icons.ENTER));
+		curBtn.enable(GamesInProgress.firstEmpty() != -1);
 
 		// Main menu
 		addButton(curBtn = new RedButton(Messages.get(this, "menu")) {

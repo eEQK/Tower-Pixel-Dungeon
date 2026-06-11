@@ -592,6 +592,40 @@ public class Dungeon {
 
 		}
 	}
+
+	public static int cloneCurrentGame() throws IOException {
+		int save = GamesInProgress.firstEmpty();
+		if (save == -1) {
+			return -1;
+		}
+
+		long oldSeed = seed;
+		String oldCustomSeedText = customSeedText;
+		boolean oldDaily = daily;
+		boolean oldDailyReplay = dailyReplay;
+
+		try {
+			seed = DungeonSeed.randomSeed();
+			customSeedText = "";
+			daily = false;
+			dailyReplay = false;
+
+			saveGame(save);
+			saveLevel(save);
+			GamesInProgress.setUnknown(save);
+			return save;
+
+		} catch (IOException e) {
+			deleteGame(save, true);
+			throw e;
+
+		} finally {
+			seed = oldSeed;
+			customSeedText = oldCustomSeedText;
+			daily = oldDaily;
+			dailyReplay = oldDailyReplay;
+		}
+	}
 	
 	public static void loadGame( int save ) throws IOException {
 		loadGame( save, true );
