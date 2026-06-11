@@ -599,32 +599,28 @@ public class Dungeon {
 			return -1;
 		}
 
-		long oldSeed = seed;
-		String oldCustomSeedText = customSeedText;
-		boolean oldDaily = daily;
-		boolean oldDailyReplay = dailyReplay;
-
 		try {
-			saveLevel(save);
+			int source = GamesInProgress.curSlot;
+			Bundle game = FileUtils.bundleFromFile(GamesInProgress.gameFile(source));
+			game.put(SEED, DungeonSeed.randomSeed());
+			game.put(CUSTOM_SEED, "");
+			game.put(DAILY, false);
+			game.put(DAILY_REPLAY, false);
+			FileUtils.bundleToFile(GamesInProgress.gameFile(save), game);
 
-			seed = DungeonSeed.randomSeed();
-			customSeedText = "";
-			daily = false;
-			dailyReplay = false;
+			for (String file : FileUtils.filesInDir(GamesInProgress.gameFolder(source))) {
+				if (file.startsWith("depth") && !file.endsWith(".tmp")) {
+					Bundle level = FileUtils.bundleFromFile(GamesInProgress.gameFolder(source) + "/" + file);
+					FileUtils.bundleToFile(GamesInProgress.gameFolder(save) + "/" + file, level);
+				}
+			}
 
-			saveGame(save);
 			GamesInProgress.setUnknown(save);
 			return save;
 
 		} catch (IOException e) {
 			deleteGame(save, true);
 			throw e;
-
-		} finally {
-			seed = oldSeed;
-			customSeedText = oldCustomSeedText;
-			daily = oldDaily;
-			dailyReplay = oldDailyReplay;
 		}
 	}
 	

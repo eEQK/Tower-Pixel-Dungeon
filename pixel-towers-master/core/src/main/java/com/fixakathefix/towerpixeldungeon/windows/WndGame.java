@@ -102,7 +102,7 @@ public class WndGame extends Window {
 			curBtn.icon(Icons.get(Icons.RANKINGS));
 		}
 
-		// New game
+		// Clone run
 		addButton(curBtn = new RedButton(Messages.get(this, "copy_run")) {
 			@Override
 			protected void onClick() {
