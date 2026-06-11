@@ -103,7 +103,7 @@ public class WndGame extends Window {
 		}
 
 		// New game
-		addButton(curBtn = new RedButton(Messages.get(this, "new_game")) {
+		addButton(curBtn = new RedButton(Messages.get(this, "copy_run")) {
 			@Override
 			protected void onClick() {
 				try {

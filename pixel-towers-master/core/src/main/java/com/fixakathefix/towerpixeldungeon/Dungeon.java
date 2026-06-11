@@ -605,13 +605,14 @@ public class Dungeon {
 		boolean oldDailyReplay = dailyReplay;
 
 		try {
+			saveLevel(save);
+
 			seed = DungeonSeed.randomSeed();
 			customSeedText = "";
 			daily = false;
 			dailyReplay = false;
 
 			saveGame(save);
-			saveLevel(save);
 			GamesInProgress.setUnknown(save);
 			return save;
 
